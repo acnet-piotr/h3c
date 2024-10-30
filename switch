@@ -1,0 +1,25 @@
+//nazwa systemowa urządzenia
+sysname switch-demo01
+
+//strefa czasowa
+clock timezone Sarajevo add 01:00:00
+
+//synchronizacja czasu przez serwer NTP
+clock protocol ntp
+ntp-service enable
+ntp-service unicast-server quicknet.h3c.com
+ntp-service unicast-server 153.19.250.123
+
+//serwery DNS
+dns server 1.1.1.1
+ipv6 dns server 2606:4700:4700::1111
+
+//haslo dla uzytkownika
+local-user admin class manage
+  password simple h3ch3ch3c12#$
+
+//kilka podstawowych ustawien dla uzytkownika
+local-user admin class manage
+  service-type telnet http https ssh terminal
+  authorization-attribute user-role network-admin
+  undo password-control complexity user-name check
