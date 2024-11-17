@@ -71,7 +71,14 @@ interface GigabitEthernet1/0/1
  description TRUNK: Link MGMT to Uplink (v3999, v4000)
 
 //link aggregation
-
+interface Bridge-Aggregation1
+ port link-type trunk
+ port trunk permit vlan 3999 4000
+ link-aggregation mode dynamic
+interface GigabitEthernet1/0/2
+ port link-aggregation group 1
+interface GigabitEthernet1/0/3
+ port link-aggregation group 1
 
 
 //ustawienie adresu IPv6 dla interfejs vlanu
