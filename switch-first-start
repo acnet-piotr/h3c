@@ -1,0 +1,104 @@
+sysname switch-demo01
+
+undo save current-configuration binary-only interval
+undo cloud-management server domain
+
+int Vlan-interface 1
+ undo ip address dhcp-alloc 
+ undo dhcp client identifier
+ undo ipv6 address dhcp-alloc 
+
+clock timezone Sarajevo add 01:00:00
+clock protocol ntp
+ntp-service enable
+ntp-service unicast-server 153.19.250.123
+
+telnet server enable
+ssh server enable
+sftp server enable
+ip http enable
+ip https enable
+web idle-timeout 720
+
+undo dns server
+undo ipv6 dns server
+dns server 1.1.1.1
+
+local-user admin class manage
+  password simple h3ch3ch3c12#$
+
+local-user admin class manage
+  service-type telnet http https ssh terminal
+  authorization-attribute user-role network-admin
+  undo password-control complexity user-name check
+  undo password-control length
+  undo password-control composition
+
+line aux 0
+ user-role network-admin
+ authentication-mode scheme
+ idle-timeout 720 0
+
+line vty 0 63
+ authentication-mode scheme
+ user-role network-operator
+ idle-timeout 720 0
+
+snmp-agent community read h3csnmpro
+snmp-agent community write h3csnmpwr
+snmp-agent sys-info version v2c
+
+lldp compliance cdp
+lldp global enable
+
+vlan 3999
+ name MGMT
+ description MGMT
+
+vlan 4000
+ name V4000
+ description V4000
+
+interface GigabitEthernet1/0/1
+ port link-type access
+ port access vlan 3999
+ description v3999: Link MGMT to Uplink
+
+interface GigabitEthernet1/0/2
+ port link-type trunk
+ port trunk permit vlan 3999 4000
+ port trunk pvid vlan 3999
+ description TRUNK: Link MGMT to Uplink (v3999, v4000)
+
+interface Bridge-Aggregation1
+ port link-type trunk
+ port trunk permit vlan 3999 4000
+ link-aggregation mode dynamic
+ 
+interface GigabitEthernet1/0/3
+ port link-type trunk
+ port trunk permit vlan 3999 4000
+ port link-aggregation group 1
+ 
+interface GigabitEthernet1/0/4
+ port link-type trunk
+ port trunk permit vlan 3999 4000
+ port link-aggregation group 1
+
+interface Vlan-interface3999
+ ip address 10.39.99.99 255.255.255.0
+
+ip route-static 0.0.0.0 0 10.39.99.1
+
+undo password-control aging enable 
+undo password-control composition enable 
+undo password-control history enable 
+undo password-control complexity user-name check
+undo password-control change-password first-login enable 
+undo password-control length enable 
+undo password-control expired-user-login 
+undo password-control update-interval
+
+sa f
+
+
