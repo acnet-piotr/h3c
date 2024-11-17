@@ -13,12 +13,6 @@ ntp-service unicast-server 153.19.250.123
 dns server 1.1.1.1
 ipv6 dns server 2606:4700:4700::1111
 
-//wylaczenie kontroli hasła
-undo password-control aging enable 
-undo password-control composition enable 
-undo password-control history enable 
-undo password-control complexity user-name check
-
 //haslo dla uzytkownika
 local-user admin class manage
   password simple h3ch3ch3c12#$
@@ -76,6 +70,10 @@ interface GigabitEthernet1/0/1
  port trunk pvid vlan 3999
  description TRUNK: Link MGMT to Uplink (v3999, v4000)
 
+//link aggregation
+
+
+
 //ustawienie adresu IPv6 dla interfejs vlanu
 interface Vlan-interface3999
  ipv6 address 2001:470:3999:1::2/64
@@ -83,4 +81,20 @@ interface Vlan-interface3999
 //domyslny routing statyczny
 ip route-static 0.0.0.0 0 10.39.99.1
 ipv6 route-static :: 0 2001:470:3999:1::1
+
+//wlaczenie lldp i cdp
+lldp compliance cdp
+lldp global enable
+
+
+//reset urządzenia do ustawień fabrycznych
+reset saved-configuration
+//odpowiadamy Y
+The saved configuration file will be erased. Are you sure? [Y/N]:Y
+//restart
+reboot
+//odpowiadamy N i Y
+Start to check configuration with next startup configuration file, please wait.........DONE!
+Current configuration may be lost after the reboot, save current configuration? [Y/N]:N
+This command will reboot the device. Continue? [Y/N]:Y
 
