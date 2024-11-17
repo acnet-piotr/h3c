@@ -4,15 +4,20 @@ sysname switch-demo01
 //strefa czasowa
 clock timezone Sarajevo add 01:00:00
 
-//synchronizacja czasu przez serwer NTP
+//synchronizacja czasu via serwer NTP
 clock protocol ntp
 ntp-service enable
-ntp-service unicast-server quicknet.h3c.com
 ntp-service unicast-server 153.19.250.123
 
 //serwery DNS
 dns server 1.1.1.1
 ipv6 dns server 2606:4700:4700::1111
+
+//wylaczenie kontroli hasła
+undo password-control aging enable 
+undo password-control composition enable 
+undo password-control history enable 
+undo password-control complexity user-name check
 
 //haslo dla uzytkownika
 local-user admin class manage
@@ -24,4 +29,58 @@ local-user admin class manage
   authorization-attribute user-role network-admin
   undo password-control complexity user-name check
 
+//line aux 0, czyli port konsolowy i ustawienie timeoutu (12h) oraz dodanie logowania jako uzytkownik
+line aux 0
+ user-role network-admin
+ authentication-mode scheme
+ idle-timeout 720 0
+
+//line vty 0 63, czyli dla virtualne terminale np. ssh
+line vty 0 63
+ authentication-mode scheme
+ user-role network-operator
+ idle-timeout 720 0
+
+//wlaczenie usług telnet, ssh, sftp, web-gui
+telnet server enable
+ssh server enable
+sftp server enable
+ip http enable
+ip https enable
+web idle-timeout 720
+
+//szybkie wlaczenie snmp w wersji 2
+snmp-agent community read h3csnmpro
+snmp-agent community write h3csnmpwr
+snmp-agent sys-info version v2c
+
+//ustawienie vlanu id 1000
+vlan 3999
+ name MGMT
+ description MGMT
+
+//ustawienie interfejs vlanu 3999 z adresem statycznym IP
+interface Vlan-interface3999
+ ip address 10.39.99.99 255.255.255.0
+
+//ustawienie interfejsu w trybie access z vlanem 3999
+interface GigabitEthernet1/0/1
+ port link-type access
+ port access vlan 3999
+ description v3999: Link MGMT to Uplink
+
+//ustawienie interfejsu w trybie trunk z vlanem 3999 i 4000 oraz z domyślnym vlanem 3999
+interface GigabitEthernet1/0/1
+ port link-type trunk
+ port trunk permit vlan 3999 4000
+ port trunk pvid vlan 3999
+ description TRUNK: Link MGMT to Uplink (v3999, v4000)
+
+//ustawienie adresu IPv6 dla interfejs vlanu
+interface Vlan-interface3999
+ ipv6 address 2001:470:3999:1::2/64
+
+//domyslny routing statyczny
+ip route-static 0.0.0.0 0 10.39.99.1
+ipv6 route-static :: 0 2001:470:3999:1::1
 
