@@ -27,13 +27,13 @@ local-user admin class manage
 line aux 0
  user-role network-admin
  authentication-mode scheme
- idle-timeout 720 0
+ idle-timeout 720
 
 //line vty 0 63, czyli dla virtualne terminale np. ssh
 line vty 0 63
  authentication-mode scheme
- user-role network-operator
- idle-timeout 720 0
+ user-role network-admin
+ idle-timeout 720
 
 //wlaczenie usług telnet, ssh, sftp, web-gui
 telnet server enable
