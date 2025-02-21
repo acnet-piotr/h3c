@@ -37,12 +37,12 @@ local-user admin class manage
 line aux 0
  user-role network-admin
  authentication-mode scheme
- idle-timeout 720 0
+ idle-timeout 720
 
 line vty 0 63
  authentication-mode scheme
- user-role network-operator
- idle-timeout 720 0
+ user-role network-admin
+ idle-timeout 720
 
 snmp-agent community read h3csnmpro
 snmp-agent community write h3csnmpwr
