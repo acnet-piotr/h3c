@@ -1,0 +1,82 @@
+
+
+TOPOLOGIA
+
++-------------------+                     +-------------------+
+|        SW01       |                     |        SW02       |
+|                   |                     |                   |
+|       Port 1/0/54 |<------------------->| Port 2/0/53       |
+|       Port 1/0/53 |<------------------->| Port 2/0/54       |
+|                   |                     |                   |
++-------------------+                     +-------------------+
+
+SW01
+
+[SW01]int range FortyGigE 1/0/53 to for 1/0/54
+[SW01-if-range]shutdown
+[SW01-if-range]quit
+[SW01]irf-port 1/1
+[SW01-irf-port1/1]port group interface FortyGigE 1/0/54
+[SW01-irf-port1/1]quit
+[SW01]irf-port 1/2
+[SW01-irf-port1/2]port group interface FortyGigE 1/0/53
+[SW01-irf-port1/2]quit
+[SW01]irf member 1 priority 20
+[SW01]sa f
+[SW01]int range FortyGigE 1/0/53 to for 1/0/54
+[SW01-if-range]undo shutdown
+[SW01-if-range]quit
+[SW01]irf-port-configuration active
+[SW01]sa f
+
+SW02
+
+[SW02]irf member 1 renumber 2
+Renumbering the member ID may result in configuration change or loss. Continue?[Y/N]:Y
+[SW02]sa f
+[SW02]quit
+[SW02]reboot
+[SW02]int range FortyGigE 2/0/53 to FortyGigE 2/0/54
+[SW02-if-range]shutdown
+[SW02-if-range]quit
+[SW02]irf-port 2/1
+[SW02-irf-port2/1]port group interface FortyGigE 2/0/54
+[SW02-irf-port2/1]quit
+[SW02]irf-port 2/2
+[SW02-irf-port2/2]port group interface FortyGigE 2/0/53
+[SW02-irf-port2/2]quit
+[SW02]int range FortyGigE 2/0/53 to FortyGigE 2/0/54
+[SW02-if-range]undo shutdown
+[SW02-if-range]quit
+[SW02]irf-port-configuration active
+[SW02]sa f
+
+
+Teraz można podłączyć kable DAC:
+SW1 port 40G numer 54 i do SW2 port 40G numer 53
+SW1 port 40G numer 53 i do SW2 port 40G numer 54
+
+
+Po uruchomieniu przełącznika/ów można zmienić nazwę:
+[SW01]sysname STACK01
+[STACK01]sa f
+
+
+Polecenia diagnostyczne
+[STACK01]display irf
+MemberID    Role    Priority  CPU-Mac         Description
+ *+1        Master  20        7afd-6770-0104  ---
+   2        Standby 1         7afd-6cca-0204  ---
+--------------------------------------------------
+ * indicates the device is the master.
+ + indicates the device through which the user logs in.
+ The bridge MAC of the IRF is: 7afd-6770-0100
+ Auto upgrade                : yes
+ Mac persistent              : 6 min
+ Domain ID                   : 0
+
+
+[STACK01]display irf configuration
+ MemberID NewID    IRF-Port1                     IRF-Port2
+ 1        1        FortyGigE1/0/54               FortyGigE1/0/53
+ 2        2        FortyGigE2/0/54               FortyGigE2/0/53
