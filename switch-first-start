@@ -8,7 +8,7 @@ int Vlan-interface 1
  undo dhcp client identifier
  undo ipv6 address dhcp-alloc 
 
-clock timezone Sarajevo add 01:00:00
+clock timezone Warsaw add 01:00:00
 clock summer-time FDT 02:00:00 March last Sunday 02:00:00 October last Sunday 01:00:00
 clock protocol ntp
 ntp-service enable
