@@ -2,7 +2,7 @@
 sysname switch-demo01
 
 //strefa czasowa
-clock timezone Sarajevo add 01:00:00
+clock timezone Warsaw add 01:00:00
 clock summer-time FDT 02:00:00 March last Sunday 02:00:00 October last Sunday 01:00:00
 
 //synchronizacja czasu via serwer NTP
