@@ -9,6 +9,7 @@ int Vlan-interface 1
  undo ipv6 address dhcp-alloc 
 
 clock timezone Sarajevo add 01:00:00
+clock summer-time FDT 02:00:00 March last Sunday 02:00:00 October last Sunday 01:00:00
 clock protocol ntp
 ntp-service enable
 ntp-service unicast-server 153.19.250.123
